@@ -411,7 +411,7 @@ Now we can write another function that invokes `dic` (or `llm`) and creates the 
 
 ```bash
 function committe-mkpatch() {
-    dic -s "$(committe-prompt)" "$@" > "./$(git rev-parse --git-dir)/committe-patchfile"
+    dic -s "$(committe-prompt)" "$@" > "$(git rev-parse --git-dir)/committe-patchfile"
 }
 ```
 > **NOTE:**
@@ -419,7 +419,7 @@ function committe-mkpatch() {
 > It works for submodules and no matter where in the folder hierarchy you're located.
 > You can think of 
 > ```
-> ./$(git rev-parse --git-dir)/committe-patchfile
+> $(git rev-parse --git-dir)/committe-patchfile
 > ```
 > as being a more robust version of
 > ```
@@ -444,7 +444,7 @@ $ cat .git/committe-patchfile
 There are a few subtlties to observe:
 
 1. The heredoc applied to `committe-mkpatch` gets passed over to `dic` inside of it,
-    and so `dic` will write a patchfile to stdout, and output redirection will place this patchfile at `./$(git rev-parse --git-dir)/committe-patchfile`.
+    and so `dic` will write a patchfile to stdout, and output redirection will place this patchfile at `$(git rev-parse --git-dir)/committe-patchfile`.
     A file inside the `.git` folder was chosen because git ignores these files, and so the patch will not accidentally end up being committed to the repo.
     It is standard for tools that work with git to place their temporary files in the `.git` repo like this.
 
@@ -478,7 +478,7 @@ function committe-apply() {
     #    This command automatically adds the changed files to the staging area
     #    (which is also called the index),
     #    so we do not need to run a separate git add command before committing.
-    if ! git apply --index --recount --ignore-whitespace '.git/committe-patchfile'; then
+    if ! git apply --index --recount --ignore-whitespace "$(git rev-parse --git-dir)/committe-patchfile"; then
         echo 'git apply failed'
         return 1
     fi
