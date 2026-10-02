@@ -411,9 +411,21 @@ Now we can write another function that invokes `dic` (or `llm`) and creates the 
 
 ```bash
 function committe-mkpatch() {
-    dic -s "$(committe-prompt)" "$@" > "./$(git revparse --git-dir)/committe-patchfile"
+    dic -s "$(committe-prompt)" "$@" > "./$(git rev-parse --git-dir)/committe-patchfile"
 }
 ```
+> **NOTE:**
+> The `git rev-parse --git-dir` command always outputs the location of your `.git` folder.
+> It works for submodules and no matter where in the folder hierarchy you're located.
+> You can think of 
+> ```
+> ./$(git rev-parse --git-dir)/committe-patchfile
+> ```
+> as being a more robust version of
+> ```
+> ./.git/committe-patchfile
+> ```
+
 Add this function to your `committe.sh` script and re-source it.
 
 Inside of the `lab-cat` repo's master branch (where the `cat.py` file has not been fixed), you can now generate a patch by running a command like
@@ -432,7 +444,7 @@ $ cat .git/committe-patchfile
 There are a few subtlties to observe:
 
 1. The heredoc applied to `committe-mkpatch` gets passed over to `dic` inside of it,
-    and so `dic` will write a patchfile to stdout, and output redirection will place this patchfile at `./$(git revparse --git-dir)/committe-patchfile`.
+    and so `dic` will write a patchfile to stdout, and output redirection will place this patchfile at `./$(git rev-parse --git-dir)/committe-patchfile`.
     A file inside the `.git` folder was chosen because git ignores these files, and so the patch will not accidentally end up being committed to the repo.
     It is standard for tools that work with git to place their temporary files in the `.git` repo like this.
 
@@ -469,12 +481,12 @@ function committe-apply() {
     if ! git apply --index --recount --ignore-whitespace '.git/committe-patchfile'; then
         echo 'git apply failed'
         return 1
-    else
+    fi
 
     # The git apply command ignores the commit message at the top of the patchfile.
     # Now we extract that message with sed.
     local msg
-    msg="$(sed -e '/^diff --git/,$d' "./$(git revparse --git-dir)/committe-patchfile")"
+    msg="$(sed -e '/^diff --git/,$d' "./$(git rev-parse --git-dir)/committe-patchfile")"
 
     # We commit specifying the --author flag and tagging the message.
     # Both of these modifications make it easy to idenitfy which commits were made automatically.
