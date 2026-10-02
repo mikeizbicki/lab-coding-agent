@@ -486,7 +486,7 @@ function committe-apply() {
     # The git apply command ignores the commit message at the top of the patchfile.
     # Now we extract that message with sed.
     local msg
-    msg="$(sed -e '/^diff --git/,$d' "./$(git rev-parse --git-dir)/committe-patchfile")"
+    msg="$(sed -e '/^diff --git/,$d' "$(git rev-parse --git-dir)/committe-patchfile")"
 
     # We commit specifying the --author flag and tagging the message.
     # Both of these modifications make it easy to idenitfy which commits were made automatically.
