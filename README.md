@@ -13,7 +13,7 @@ A later lab will bring your agent to feature parity with Claude Code (and beyond
 > You can get access to the API key by running the command
 >
 > ```
-> $ export OPENROUTER_API_KEY='sk'-'or'-'v1-7568a8484b8'55a500d2ac7920fa31efe59f1d53f3b060d914290d543ab36e337
+> $ export OPENROUTER_API_KEY='sk-or''-v1-f14713fa22''c1176c0776fef5a56abdcea28a1''9ad01674ab7b38280612b81bab8'
 > ```
 >
 > > **DOUBLE NOTE:**
