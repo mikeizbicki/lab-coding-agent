@@ -7,8 +7,15 @@ A later lab will bring your agent to feature parity with Claude Code (and beyond
 
 <img src=img/xkcd.png width=300px />
 
+> **RECALL:**
+> `dic` and `llm` are both "thin wrappers" around the raw llm APIs.
+> Students who took CSCI040 have implemented their own versions of these programs.
+> `llm` is the more "standard" program, but I stopped using it because of slowness issues.
+> You are welcome to use either program for this lab.
+> Install steps are shown in the NOTE below.
+
 > **NOTE:**
-> Everything in this lab works with `llm` and the free tier qwen models provided by groq.
+> Everything in this lab works with the free tier qwen models provided by groq.
 > But I've also created a public API key that everyone in this class can share so that you can all use fancier newer models without paying.
 > You can get access to the API key by running the command
 >
@@ -20,6 +27,11 @@ A later lab will bring your agent to feature parity with Claude Code (and beyond
 > > Observe the weird single quotes `'` to the right of the equals above.
 > > Github performs *secret scanning* checks on all files committed to github looking for API keys that match a regex.
 > > Normally, people do not want to actually upload API keys to github because then everyone in the world has access to them.
+> > Accidentally uploading API keys to the wrong place is one of the most common causes of companies getting "hacked",
+> > and is literally the type of problem that keeps good software engineers awake at night.
+> >
+> > <img src=img/apikey.jpg width=300px />
+> >
 > > But in this case I actually do want to upload the API key.
 > > To avoid the regex check that github uses, I added these `'`.
 > > *Semantically* this has the same meaning as the shell without the `'`,
@@ -28,8 +40,14 @@ A later lab will bring your agent to feature parity with Claude Code (and beyond
 > Then with `OPENROUTER_API_KEY` in your environment,
 > you should be able to use any openrouter model from either `dic` or `llm`.
 > From `llm`, you'll have to pip install the `llm-openrouter` extension then you can run the `llm models` command to view all of the models available (which is *every* model that exists).
-> `dic` has openrouter models enabled without any extensions,
-> and you can run with the latest deepseek model by passing the `-m openrouter+deepseek` flag:
+> `dic` has openrouter models enabled without any extensions.
+> You should download the latest version by first uninstalling the existing version (if you've installed it), and then installing from github.
+> ```
+> $ pip3 uninstall dic
+> $ pip3 install git+https://github.com/mikeizbicki/dic
+> ```
+>
+> Now you can run with the latest deepseek model by passing the `-m openrouter+deepseek` flag:
 > ```
 > $ dic -m openrouter+deepseek 'hello'
 > ```
@@ -38,7 +56,7 @@ A later lab will bring your agent to feature parity with Claude Code (and beyond
 
 Your agent will rely on git *patch files*.
 Patch files are core to the Linux and Python development process,
-and you'll notice that Linus and Guido both contributetd to this lab.
+and you'll notice that Linus and Guido both contributed to this lab.
 
 <img src=img/contrib.png width=200px />
 
@@ -63,16 +81,20 @@ The rest of this lab can be completed alone
 (but you are of course encouraged to collaborate with other biologicals).
 
 > **CAUTION:**
-> This is the first time students have worked through this lab, so there's likely to be bugs.
-> LLMs are also non-deterministic, so this will exacerbate these bugs.
-> Work carefully, and ask questions liberally.
+> Everything with llms is a bit experimental.
+> So I *think* everything in this lab is correct,
+> but there might be some rough edges where the commands give slightly different output for you and for me.
+> So you should pay close attention and be careful.
+>
+> Also, there is a bunch of subtle git stuff going on.
+> It is easy to get lost in the git.
 
 ## Part 0: setup
 
 Clone the repo.
 
 ```
-$ git clone https://github.com/mikeizbicki/lab-coding-agent
+$ git clone https://github.com/mikeizbicki/lab-coding-agent -q
 $ cd lab-coding-agent
 ```
 
@@ -88,6 +110,7 @@ You can download the contents with the `submodule update` git command:
 ```
 $ git submodule update --init --recursive
 $ ls lab-cat
+cat.py  README.md
 ```
 
 Inside of this repo is a basic data structures assignment for understanding the difference between constant and linear memory algorithms.
@@ -103,6 +126,7 @@ Inside the `lab-cat` submodule create a new branch `pseudomanual`:
 ```
 $ cd lab-cat
 $ git checkout -b pseudomanual
+Switched to a new branch 'pseudomanual'
 ```
 
 Soon we will see how to use an llm to solve the lab for us.
@@ -128,7 +152,7 @@ EOF
 ```
 
 > **NOTE:**
-> Throughout the lab, feel free to use either `llm` or `qwen`.
+> Throughout the lab, feel free to use either `llm` or `qwen` or `dic`.
 > The instructions use all the different versions of these commands,
 > and so you'll probably have to adapt parts of the instructions to your setup.
 
@@ -555,6 +579,7 @@ I will check that all branches are correctly uploaded.
 ---
 
 I strongly encourage you to try to use the `committe` tool throughout the rest of the course.
+
 The model `deepseek-v4.1-flash` (or any other SOTA model) can essentially 1shot all the code you need for the mapreduce assignment...
 but you would still have to figure out how to orchestrate all the files and get them to run correctly...
 
